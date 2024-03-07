@@ -8,15 +8,15 @@ toc:  true
 ---
 
 ## Overview
-Amazon Sagemaker provides a convinient servise to deploy the SOTA open source model in minutes, which is perticulary useful when you want to check if a new published model is a good solution to a problem in your special domain.  
+Amazon Sagemaker provides a convenient service to deploy the SOTA open-source model in minutes, which is particularly useful when you want to check if a newly published model is a good solution to a problem in your special domain.
 
-Generally, the deplyment following a special invocation flow.
+Generally, the deployment follows a special invocation flow.
 
 ![image](/assets/post_img/2024-03-06-Chatbot-with-AWSsagemaker/invocation_flow.png){: .align-center}
 
-- **Model:** Deploy the pretrained model to Sagemaker and create an endpoint and wait for serving. This step can be done by few click in JumpStart.
-- **Lambda:** Create a Lambda function to invoke the endpoint. It will passes the intput from the user request to the endpoint and return the model output. It will only invoke when a request is recieved. Therefore, it will save resource and cost by the on demand service.
-- **API Gateway:** Add a Amazon API Gateway for receiving request and calling the lambda function as needed. 
+- **Model:** Deploy the pretrained model to Sagemaker and create an endpoint and wait for serving. This step can be done by a few clicks in JumpStart.
+- **Lambda:** Create a Lambda function to invoke the endpoint. It will pass the input from the user request to the endpoint and return the model output. It will only be invoked when a request is received. Therefore, it will save resources and cost by the on-demand service.
+- **API Gateway:** Add an Amazon API Gateway for receiving requests and calling the lambda function as needed. 
 
 ## Create Domain
 
@@ -128,14 +128,14 @@ Specifically, you can copy your endpoint name and model name from the `SageMaker
 
 The response only contains emojis, which is exactly what we need.
 
-By now, the Llama2 7B model has perfectly in service. We can design a website to send post request to the api and start chatting! 
+By now, the Llama2 7B model is perfectly in service. We can design a website to send post requests to the API and start chatting! 
 
 ## Debug Experiences
-It is worth knowing that the default running environment of the lambda function in AWS is not working in this project because of the version of boto3 package. We have to deploy a layer and attach it to the lambda function. The layer package and the lambda function will be uploaded to the github repository. Fell free to download them and play around. [Github_repo](https://github.com/yu-jinh/AWS_chatbot)
+It is worth knowing that the default running environment of the lambda function in AWS is not working in this project because of the version of boto3 package. We have to deploy a layer and attach it to the lambda function. The layer package and the lambda function will be uploaded to the github repository. Feel free to download them and play around. [Github_repo](https://github.com/yu-jinh/AWS_chatbot)
 
 Now let's deploy a lambda layer given those files.
 
-- Open the `layers` page in the right tool bar, and click `create layer`.
+- Open the `layers` page in the right toolbar, and click `create layer`.
 
 ![img](/assets/post_img/2024-03-06-Chatbot-with-AWSsagemaker/aws_layer.png){: .align-center}
 
@@ -143,11 +143,11 @@ Now let's deploy a lambda layer given those files.
 
 ![img](/assets/post_img/2024-03-06-Chatbot-with-AWSsagemaker/aws_layer2.png)
 
-- Click the `Functions` on the left tool bar, go back to the lambda function page and attach the layer to the function.Scroll down and click `Add layer`.The configuration should be the same as following:
+- Click the `Functions` on the left toolbar, go back to the lambda function page and attach the layer to the function. Scroll down and click `Add layer`.The configuration should be the same as follows:
 
 ![img](/assets/post_img/2024-03-06-Chatbot-with-AWSsagemaker/aws_layer3.png)
 
-- The `lambda_function.py` file in the repo is the lambda function you need on this experiment. Fell free to copy it and don't forget to replace the endpoint name and model name.
+- The `lambda_function.py` file in the repo is the lambda function you need on this experiment. Feel free to copy it and don't forget to replace the endpoint name and model name.
 
 That's it! The lambda function should be run under the compatible version of boto3 library! You are all set! You can also create your own layer package with the binary files you want by following this [Tutorial](https://docs.aws.amazon.com/lambda/latest/dg/chapter-layers.html)
 
