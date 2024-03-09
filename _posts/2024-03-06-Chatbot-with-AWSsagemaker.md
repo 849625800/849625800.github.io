@@ -3,7 +3,7 @@ layout: post
 title: Deploy a Chatbot with AWSsagemaker using JumpStart
 date: 2024-03-06 13:26 +0800
 last_modified_at: 2024-03-06 13:45:25 +0800
-tags: [AWS, tutorial]
+tags: [AWS]
 toc:  true
 ---
 
