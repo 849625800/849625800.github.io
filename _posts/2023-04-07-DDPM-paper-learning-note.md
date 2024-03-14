@@ -4,7 +4,7 @@ title: DDPM Paper Learning Note
 date: 2023-04-07 13:26 +0800
 last_modified_at: 2023-04-07 13:26 +0800
 math: true
-tags: [DL]
+tags: [Machine Learning, Diffusion Model]
 toc:  true
 ---
 
