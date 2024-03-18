@@ -24,7 +24,7 @@ The groundtruth will annotate mitochondria in two sub-volumns.
 
 
 ## Segmentation model
-The first model we use here is **SegFormer**: The SegFormer model was proposed in [SegFormer: Simple and Efficient Design for Semantic Segmentation with Transformers](https://arxiv.org/abs/2105.15203) by Enze Xie, Wenhai Wang, Zhiding Yu, Anima Anandkumar, Jose M. Alvarez, Ping Luo. The model consists of a hierarchical Transformer encoder and a lightweight all-MLP decode head to achieve great results on image segmentation benchmarks such as ADE20K and Cityscapes.
+The model we use here is **SegFormer**: The SegFormer model was proposed in [SegFormer: Simple and Efficient Design for Semantic Segmentation with Transformers](https://arxiv.org/abs/2105.15203) by Enze Xie, Wenhai Wang, Zhiding Yu, Anima Anandkumar, Jose M. Alvarez, Ping Luo. The model consists of a hierarchical Transformer encoder and a lightweight all-MLP decode head to achieve great results on image segmentation benchmarks such as ADE20K and Cityscapes.
 
 # Data processing
 - Download the `.tif` file of train and test splits from [EPFL](https://www.epfl.ch/labs/cvlab/data/data-em/), open it, and create a dataset:
@@ -54,28 +54,95 @@ test_path, test_label_path = os.path.join("data", "testing.tif"), os.path.join("
 train_dataset = create_dataset(train_path, train_label_path)
 test_dataset = create_dataset(test_path, test_label_path)
 
-dataset = DatasetDict({
-        "train": train_dataset,
-        "test": test_dataset
-    })
+id2label = {0: 'background', 255: 'target'}
+label2id = {'background':0, 'target': 255}
+num_labels = len(id2label)
 ```
 
 - Set transformation 
 
 ```python 
-checkpoint = "nvidia/mit-b0"
-image_processor = AutoImageProcessor.from_pretrained(checkpoint, reduce_labels=True)
+    checkpoint = "nvidia/mit-b0"
+    image_processor = AutoImageProcessor.from_pretrained(checkpoint, reduce_labels=False)
 
-jitter = ColorJitter(brightness=0.25, contrast=0.25, saturation=0.25, hue=0.1)
-def transforms(example_batch):
-    print(example_batch)
-    images = [x.convert("RGB") for x in example_batch["image"]]
-    labels = [x for x in example_batch["label"]]
-    inputs = image_processor(images, labels)
-    return inputs
+    jitter = ColorJitter(brightness=0.25, contrast=0.25, saturation=0.25, hue=0.1)
+    def transforms(example_batch):
+        images = [jitter(x.convert("RGB")) for x in example_batch["image"]]
+        labels = [x for x in example_batch["annotation"]]
+        inputs = image_processor(images, labels)
+        return inputs
 
-train_dataset.set_transform(transforms)
-test_dataset.set_transform(transforms)
+    def val_transforms(example_batch):
+        images = [jitter(x.convert("RGB")) for x in example_batch["image"]]
+        labels = [x for x in example_batch["annotation"]]
+        inputs = image_processor(images, labels)
+        return inputs
+    
+    train_dataset.set_transform(transforms)
+    test_dataset.set_transform(val_transforms)
 ```
+- Implement evaluation metrices
+```Python
+    def compute_metrics(eval_pred):
+        with torch.no_grad():
+            logits, labels = eval_pred
+            logits_tensor = torch.from_numpy(logits)
+            logits_tensor = nn.functional.interpolate(
+                logits_tensor,
+                size=labels.shape[-2:],
+                mode="bilinear",
+                align_corners=False,
+            ).argmax(dim=1)
+
+            pred_labels = logits_tensor.detach().cpu().numpy()
+            metrics = metric.compute(
+                predictions=pred_labels,
+                references=labels,
+                num_labels=num_labels,
+                ignore_index=255,
+                reduce_labels=False,
+            )
+            for key, value in metrics.items():
+                if isinstance(value, np.ndarray):
+                    metrics[key] = value.tolist()
+            return metrics
+```
+- load pretrained model
+
+```Python
+model = AutoModelForSemanticSegmentation.from_pretrained(checkpoint, id2label=id2label, label2id=label2id)
+```
+
+- Set training arguments, trainer, and start training
+```python
+    training_args = TrainingArguments(
+        output_dir=os.path.join("data", "Electron-Microscopy-seg"),
+        learning_rate=6e-5,
+        num_train_epochs=50,
+        per_device_train_batch_size=2,
+        per_device_eval_batch_size=2,
+        save_total_limit=3,
+        evaluation_strategy="steps",
+        save_strategy="steps",
+        save_steps=20,
+        eval_steps=20,
+        logging_steps=10,
+        eval_accumulation_steps=5,
+        remove_unused_columns=False,
+    )
+
+
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=test_dataset,
+        compute_metrics=compute_metrics,
+    )
+
+    trainer.train()
+```
+
+This is the basic training process, more details will be updated in the future :)
 
 # Update in progress.....
