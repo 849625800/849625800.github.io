@@ -82,7 +82,7 @@ num_labels = len(id2label)
     test_dataset.set_transform(val_transforms)
 ```
 - Implement evaluation metrices
-```Python
+```python
     def compute_metrics(eval_pred):
         with torch.no_grad():
             logits, labels = eval_pred
