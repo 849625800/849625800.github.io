@@ -162,6 +162,25 @@ if __name__ == "__main__":
 
 -  If one row of the target RDD is not the combination of many rows in the origin RDD, we should use `Map()`, otherwise, we can use `flatMap()` as a shortcut.
 
+**Example:** count words\
+
+```python
+from pyspark import SparkContext, SparkConf
+
+if __name__ == "__main__":
+    conf = SparkConf().setAppName("word count").setMaster("local[*]")
+    sc = SparkContext(conf = conf)
+    
+    lines = sc.textFile("data/word_count.text")
+    
+    words = lines.flatMap(lambda line: line.split(" "))
+    
+    wordCounts = words.countByValue()
+    
+    for word, count in wordCounts.items():
+        print("{} : {}".format(word, count))
+```
+
 # Reference:
 
 Thanks for the amazing tutorial by Youtuber [Analytics Excellence](https://www.youtube.com/watch?v=W__Jk83gOyo&list=PL0hSJrxggIQr6wA8buIn1Yxu810ugGed-&index=4)
