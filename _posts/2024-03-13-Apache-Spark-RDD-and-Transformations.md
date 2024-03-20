@@ -155,6 +155,13 @@ if __name__ == "__main__":
 
     airportsNameAndCityNames.saveAsTextFile("out/airports_by_latitude.text")
 ```
+
+# Special mapping: flatMap()
+
+`flatMap()` will return a flattened results after mapping.
+
+-  If one row of the target RDD is not the combination of many rows in the origin RDD, we should use `Map()`, otherwise, we can use `flatMap()` as a shortcut.
+
 # Reference:
 
 Thanks for the amazing tutorial by Youtuber [Analytics Excellence](https://www.youtube.com/watch?v=W__Jk83gOyo&list=PL0hSJrxggIQr6wA8buIn1Yxu810ugGed-&index=4)
