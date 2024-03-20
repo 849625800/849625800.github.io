@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Apache Spark RDD and Transformations
+title: Apache Spark RDD and Transformations of fliter and map
 date: 2024-03-13 20:43 +0800
 last_modified_at: 2024-03-19 20:43 +0800
 math: true
