@@ -1,10 +1,10 @@
 ---
 layout: post
 title: Apache Spark - Set Operations
-date: 2024-03-13 20:43 +0800
+date: 2024-03-20 20:43 +0800
 last_modified_at: 2024-03-20 20:43 +0800
 math: true
-tags: [Data Engineering]
+tags: [Spark]
 toc:  true
 ---
 
