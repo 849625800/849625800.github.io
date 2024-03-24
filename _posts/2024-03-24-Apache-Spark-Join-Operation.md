@@ -79,6 +79,14 @@ The shuffled hash join ensures that data on each partition will contain the same
 
 While this approach always works, it can be more expensive than necessary because it requires a shuffle.
 
+# Avoid Shuffle
+The shuffle can be avoided if both RDDs have a known partitioner. If they have the same partitioner, the data may be colocated. It can prevent network transfer. It is recommanded to call partitionby on the two join RDD with the same partitioner before joining them.
+
+```python
+from pyspark.rdd import portable_hash
+ages.partitionBy(20, partitionFunc = portable_hash)
+addresses.partitionBy(20, partitionFunc = portable_hash)
+```
 # Reference:
 
 Thanks for the amazing tutorial by Youtuber [Analytics Excellence](https://www.youtube.com/watch?v=W__Jk83gOyo&list=PL0hSJrxggIQr6wA8buIn1Yxu810ugGed-&index=21)
