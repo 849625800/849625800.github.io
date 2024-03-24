@@ -133,6 +133,7 @@ selected_lines.first()
 - Spark use lazy evaluation to reduce the number of passes to take over our data by grouping operations together.
 
 - Transformation returns RDDs, while actions returns some other datatypes.
+
 # Reference:
 
 Thanks for the amazing tutorial by Youtuber [Analytics Excellence](https://www.youtube.com/watch?v=W__Jk83gOyo&list=PL0hSJrxggIQr6wA8buIn1Yxu810ugGed-&index=4)
