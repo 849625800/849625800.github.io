@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Apache Spark - SparkSQL Performance Tuning
+title: Apache Spark - SparkSQL Running in Clusters
 date: 2024-03-28 10.22 +0800
 last_modified_at: 2024-03-28 10.22:30 +0800
 math: true
