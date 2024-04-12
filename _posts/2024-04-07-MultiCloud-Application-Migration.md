@@ -156,38 +156,38 @@ Generate a new access key for full s3 access named `luxxy-covid-testing-system-e
 ## Move the existing pdf data to S3
 The last step for this migration is the data migration. We need to move the existing pdf files to teh Amazon S3 bucket which is connected to the application running on Kubernetes.
 
-    ```bash
-    mysql --host=<replace_with_public_ip_cloudsql> --port=3306 -u app -p
-    ```
+```bash
+mysql --host=<replace_with_public_ip_cloudsql> --port=3306 -u app -p
+```
 
 Then, use `db_dump.sql` file to create a table named `dbcovidtesting`
 
-    ```bash
-    use dbcovidtesting;
-    source ~/MultiCloud-Migration/db/db_dump.sql
-    show tables;
-    exit;
-    ``` 
+```bash
+use dbcovidtesting;
+source ~/MultiCloud-Migration/db/db_dump.sql
+show tables;
+exit;
+``` 
 
 The table should have the informations of the tested people and the pdf file name. Check if the data got imported correctly.
 
-    ```bash
-    select * from records;
-    exit;
-    ```
+```bash
+select * from records;
+exit;
+```
 
 Next, open the AWS Cloud Shell, download the project.
 
-    ```bash
-    git clone https://github.com/yu-jinh/MultiCloud-Migration.git\
-    ```
+```bash
+git clone https://github.com/yu-jinh/MultiCloud-Migration.git\
+```
 
 put the files to S3 bucket.
 
-    ```bash
-    cd /MultiCloud-Migration/pdf_files
-    aws s3 sync . s3://luxxy-covid-testing-system-pdf-en-xxxx
-    ```
+```bash
+cd /MultiCloud-Migration/pdf_files
+aws s3 sync . s3://luxxy-covid-testing-system-pdf-en-xxxx
+```
 
 Now, we can see all the pdf files form the website. The migration is completed!
 
