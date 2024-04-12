@@ -17,6 +17,7 @@ This note will focus on several topics.
 - Later on, We will learn how to create Docker Image (Dockerfile), understand some main Docker commands and versioning.
 - Finally, we will learn the Docker workflow in a big piture.
 
+[Github repo](https://github.com/yu-jinh/Docker-Practice) 
 # What is Docker? Why is this important?
 
 **what?**
